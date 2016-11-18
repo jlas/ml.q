@@ -179,8 +179,12 @@ id3hlpr:{[data;tree;l]
  if[l=count attrs;:r];
  / recurse
  np_:(,/) nextpaths[data] each r`n_;
- leaves:select from np_ where l = count each n_;
- leaves uj id3hlpr[data;np_;l+1]}
+ r:id3hlpr[data;np_;l+1];
+ / select paths that that have length l
+ tmpl:select from np_ where l = count each n_;
+ / drop tree paths that are already represented by leave paths
+ tmpi:select from r where not ({[l;x] `n_`v_!(l#x[`n_];l#x[`v_])}[l] each r) in tmpl;
+ tmpl uj tmpi}
 
 /
  * ID3
