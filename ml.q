@@ -195,3 +195,15 @@ id3hlpr:{[data;tree;l]
  *
 \
 id3:{[data] id3hlpr[data;nextpaths[data;enlist[]];1]}
+
+/
+ * Classic weather dataset
+ *
+\
+weatherdata:{
+ outlook:`sunny`sunny`overcast`rain`rain`rain`overcast`sunny`sunny`rain`sunny`overcast`overcast`rain;
+ temp:`hot`hot`hot`mild`cool`cool`cool`mild`cool`mild`mild`mild`hot`mild;
+ humidity:`high`high`high`high`normal`normal`normal`high`normal`normal`normal`high`normal`high;
+ wind:`weak`strong`weak`weak`weak`strong`strong`weak`weak`weak`strong`strong`weak`strong;
+ class:`no`no`yes`yes`yes`no`yes`no`yes`yes`yes`yes`yes`no;
+ t:([] outlook:outlook;temp:temp;humidity:humidity;wind:wind;class:class)}
