@@ -102,28 +102,30 @@ infogain:{[tbl;attrib]
 /
  * Generate paths through a decision tree.
  *   data is a table containing entire dataset
- *   n_ is initial attribute path to consider
+ *   d is a dict that contains attribute path (n_) and values (v_) to consider
  *
  * The result contains a table with two columns n_ and v_. The n_ column will
- * match the input n_ except a new path is created for each new possible
- * attribute combination. The v_ column will contain values for all but the
- * last attribute in each path.
+ * match the input d[`n_] except new possible attributes are appended. The
+ * prefix of the v_ column should match the input values d[`v_].
  *
  * e.g.
  *
- * q)t:([] a:1 2;b:3 4;class:`A`B)
- * q)nextpaths[t;`a]
+ * q)t:([] a:1 1 2 2;b:3 4 3 4;class:`A`B`A`B)
+ * q)nextpaths[t;`n_`v_!(enlist[`a];enlist[])]
  * n_  v_
  * ------
  * a b 1
  * a b 2
 \
-nextpaths:{[data;n_]
+nextpaths:{[data;d]
+ n_:d[`n_];
  attrs:key[first[data]] except `class;
- if[null first n_;:flip `n_`v_!(enlist each attrs;count[attrs]#0N)];
+ if[null first n_;:flip `n_`v_!(enlist each attrs;count[attrs]#enlist[])];
  / construct a func. query similar to "select v_:(x,'y) from data"
  clause:{if[1=count x;:(each;enlist;first x)]; {((';,);x;y)} over x}[n_];
  tmp:?[data;();1b;enlist[`v_]!enlist[clause]];
+ if[not null first d[`v_];
+    tmp:select from tmp where all each =[d[`v_];] each (-1_') v_];
  / tack on the passed-in n_ to each row
  tmp[`n_]:(count[tmp];count[n_])#n_;
  tmp:`n_`v_ xcols tmp;
@@ -176,15 +178,13 @@ id3hlpr:{[data;tree;l]
  if[0=count tree;:tree];
  r:id3step[data;tree;l];
  attrs:key[first[data]] except `class;
- if[l=count attrs;:r];
+ if[(0=count[r]) or l=count attrs;:r];
  / recurse
- np_:(,/) nextpaths[data] each r`n_;
+ np_:(,/) nextpaths[data] each r;
  r:id3hlpr[data;np_;l+1];
  / select paths that that have length l
  tmpl:select from np_ where l = count each n_;
- / drop tree paths that are already represented by leave paths
- tmpi:select from r where not ({[l;x] `n_`v_!(l#x[`n_];l#x[`v_])}[l] each r) in tmpl;
- tmpl uj tmpi}
+ tmpl uj r}
 
 /
  * ID3
@@ -194,7 +194,7 @@ id3hlpr:{[data;tree;l]
  *   q)id3[t]
  *
 \
-id3:{[data] id3hlpr[data;nextpaths[data;enlist[]];1]}
+id3:{[data] id3hlpr[data;nextpaths[data;`n_`v_!(enlist[];enlist[])];1]}
 
 /
  * Classic weather dataset
