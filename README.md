@@ -39,10 +39,11 @@ Iris Dataset available here: https://archive.ics.uci.edu/ml/machine-learning-dat
 
 ### Decision Tree (ID3)
 
-    q)outlook:`sunny`sunny`overcast`rain`rain`rain`overcast`sunny`sunny`rain`sunny`overcast`overcast`rain;
-    q)temp:`hot`hot`hot`mild`cool`cool`cool`mild`cool`mild`mild`mild`hot`mild;
-    q)humidity:`high`high`high`high`normal`normal`normal`high`normal`normal`normal`high`normal`high;
-    q)wind:`weak`strong`weak`weak`weak`strong`strong`weak`weak`weak`strong`strong`weak`strong;
-    q)class:`no`no`yes`yes`yes`no`yes`no`yes`yes`yes`yes`yes`no;
-    q)t:([] outlook:outlook;temp:temp;humidity:humidity;wind:wind;class:class);
-    q)id3[t]
+    q)id3[weatherdata[]]
+    n_                v_            class
+    -------------------------------------
+    ,`outlook         ,`overcast    yes
+    `outlook`wind     `rain`weak    yes
+    `outlook`wind     `rain`strong  no
+    `outlook`humidity `sunny`high   no
+    `outlook`humidity `sunny`normal yes

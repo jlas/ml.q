@@ -190,11 +190,20 @@ id3hlpr:{[data;tree;l]
  * ID3
  *
  * test:
- *   q)t:flip (`a`b`c`class!) flip {(3?10),1?`A`B`C} each til 100
+ *   q)t:flip (`a`b`c`d`class!) flip {(4?10),1?`A`B`C} each til 100
  *   q)id3[t]
  *
 \
-id3:{[data] id3hlpr[data;nextpaths[data;`n_`v_!(enlist[];enlist[])];1]}
+id3:{[data]
+ r:id3hlpr[data;nextpaths[data;`n_`v_!(enlist[];enlist[])];1];
+ / for each id3 path find the most common class, i.e. run query like:
+ /   select count i by class from data where (attr1=val1)&(attr2=val2)...
+ clauses:{{(&;x;y)} over {(=;first x;enlist last x)} each flip x`n_`v_} each r;
+ classes:{[data;clause]
+  r:?[data;enlist[clause];enlist[`class]!enlist[`class];enlist[`x]!enlist[(#:;`i)]];
+  first exec class from `x xdesc r}[data;] each clauses;
+ r[`class]:classes;
+ delete e_ from r}
 
 /
  * Classic weather dataset
