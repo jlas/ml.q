@@ -34,3 +34,9 @@ parameter and we examine the effect of different values.
 
 Performance results are the averaged total returns from applying the train and
 test procedure mentioned above over several unique securities.
+
+Some initial results are presented here. While the returns are disappointing
+the greater endeavor of this exercise might be to understand the behavior of
+the learner parameters.
+
+![return_120sec](https://raw.githubusercontent.com/jlas/ml.q/master/rl/experiment/trade/results/media/return_120sec.png)
