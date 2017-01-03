@@ -21,7 +21,7 @@ datadir:"../../data/";
 / sliding window
 swin:{[f;w;s] f each { 1_x,y }\[w#(type s)$0;s]};
 
-states:`momentum`volitility`upxsma`downxsma;
+states:`momentum`volatility`upxsma`downxsma;
 
 /
  * Read market data csv and create technical indicators
@@ -33,7 +33,7 @@ get_data:{[ticker]
  t:`date xasc t;
  t:update
   momentum:{(x>=0)} -1+close%close[i-5],
-  volitility:{(x>=0)} 5 mavg -1+close%close[i-1],
+  volatility:{(x>=0)} 5 mavg -1+close%close[i-1],
   sma20:mavg[20;close],
   sma50:mavg[50;close],
   rtn5:-1+close[i+5]%close from t;

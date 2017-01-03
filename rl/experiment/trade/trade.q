@@ -3,11 +3,11 @@
  * directory and files named with tickers, e.g. data/IBM.csv
 \
 
-\l ../algo/qlearner.q
-\l ../model/trading.q
+\l ../../algo/qlearner.q
+\l ../../model/trading.q
 
 / local data directory
-datadir:"../../data/";
+.trading.datadir:"../../../data/";
 
 / number of tickers to process
 ntickers:120;
@@ -19,7 +19,7 @@ ntickers:120;
  * @returns {table}
 \
 singleshot:{[ticker;episodes]
- store:.qlearner.init_learner[`long`short`hold;`side,.trading.states;.1;0.01;.1];
+ store:.qlearner.init_learner[`long`short`hold;`side,.trading.states;.5;0.01;.5];
  data:.trading.get_data[ticker];
  / partition half-half train / test
  part:("i"$count[data]%2);
@@ -33,8 +33,8 @@ singleshot:{[ticker;episodes]
  select date,return,bhreturn from r};
 
 getreturns:{[ticker]
- `:rtn1.csv 0:.h.tx[`csv;singleshot[ticker;1]];
- `:rtn10.csv 0:.h.tx[`csv;singleshot[ticker;10]];};
+ `:results/rtn1.csv 0:.h.tx[`csv;singleshot[ticker;1]];
+ `:results/rtn100.csv 0:.h.tx[`csv;singleshot[ticker;100]];};
 
 /
  * Batch functions: run a batch of experiments for multiple tickers and multiple
@@ -44,7 +44,7 @@ getreturns:{[ticker]
 \
 
 batch_:{[lrnargs]
- tickers:ntickers#ssr[;".csv";""] each value "\\ls ",datadir;
+ tickers:ntickers#ssr[;".csv";""] each value "\\ls ",.trading.datadir;
  .trading.traintest[;lrnargs;5] peach tickers};
 
 batch:{[lrnargs]
@@ -53,15 +53,15 @@ batch:{[lrnargs]
 
 batchwrap:{[x;y]
  r:x,batch[y];
- `:results.csv 0:.h.tx[`csv;r];
+ `:results/results.csv 0:.h.tx[`csv;r];
  r};
 
 runbatch:{
  kparams:`alpha`epsilon`gamma`episodes;
  dparams:kparams!(
-  1_til[10]%10.0;
+  0.1;
   0.01;
   0.75;
-  1 25 100 250);
+  1);
  params:flip kparams!flip (cross/) (dparams[kparams]);
  batchwrap over enlist[0#params],params};
