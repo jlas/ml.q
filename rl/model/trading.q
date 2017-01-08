@@ -21,6 +21,7 @@ datadir:"../../data/";
 / sliding window
 swin:{[f;w;s] f each { 1_x,y }\[w#(type s)$0;s]};
 
+/ technical indicators
 states:`momentum`volatility`upxsma`downxsma;
 
 /
@@ -95,12 +96,17 @@ realized_:{[rprev;r]
  * @returns {table}
 \
 realized:{[data]
+ / first record treated as a buy
+ if[not first[data]`side;'"initial side should be 1b"];
+ first_:enlist[enlist[first[data],`cash`return!0 1f]];
+ / ensure state change to get realized rtns up to last observation
+ if[1=count distinct (-2#data)`side;
+  data:update side:not side from data where i=-1+count[data]];
  r:select from data where side<>side[i-1];
- first_:enlist[enlist[first[r],`cash`return!0 1f]];
  realized_ over first_,1_r};
 
 testhlpr_:{[store;data]
- first_:enlist[enlist[first[data],enlist[`side]!enlist[0b]]];
+ first_:enlist[enlist[first[data],enlist[`side]!enlist[1b]]];
  policy[store] over first_,1_data};
 
 /
@@ -111,8 +117,7 @@ testhlpr_:{[store;data]
 \
 testhlpr:{[store;data]
  r:realized[testhlpr_[store;data]];
- r:last r[`return];
- $[null r;1f;r]};
+ last r[`return]};
 
 /
  * Train a learner for one "episode" i.e. for an entire market data slice
@@ -134,7 +139,7 @@ trainiter:{[store;train]
  * @returns {list} - total return for each slice
 \
 traintesthlpr:{[lrnargs;slices;islice]
- store:.qlearner.init_learner[`long`short`hold;`side,states;lrnargs`alpha;lrnargs`epsilon;lrnargs`gamma];
+ store:.qlearner.init_learner[`long`short;`side,states;lrnargs`alpha;lrnargs`epsilon;lrnargs`gamma];
  / first slice is the training set
  train:slices[first islice];
  / train for a variable number of episodes
