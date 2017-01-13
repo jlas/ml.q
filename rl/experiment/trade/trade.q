@@ -47,13 +47,13 @@ getreturns:{[ticker;topcnt]
  * NOTE: This may take a long time. Results are written to disk incrementally.
 \
 
-batch_:{[lrnargs]
+batch_:{[fn]
  tickers:ntickers#ssr[;".csv";""] each value "\\ls ",.trading.datadir;
- ({enlist[`$x]} each tickers),'.trading.traintest[;lrnargs;5] peach tickers};
+ ({enlist[`$x]} each tickers),'fn peach tickers};
 
 batch:{[lrnargs]
  fn:{rtns:1_x; ([] ticker:count[rtns]#first[x]; returns:rtns)};
- (lrnargs,) each (,/) fn each batch_[lrnargs]};
+ (lrnargs,) each (,/) fn each batch_[.trading.traintest[;lrnargs;5]]};
 
 batchwrap:{[x;y]
  r:x,batch[y];
@@ -69,3 +69,11 @@ runbatch:{
   100);
  params:flip kparams!flip (cross/) (dparams[kparams]);
  batchwrap over enlist[0#params],params};
+
+/
+ * Run a batch of random policies on various tickers
+ * @param {int} iters - number of iterations over all tickers
+\
+randbatch:{[iters]
+ r:(,/) {batch_[.trading.randtest]} each til iters;
+ `:results/results.csv 0:.h.tx[`csv;flip `ticker`returns!flip r]};

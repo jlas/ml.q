@@ -161,3 +161,12 @@ traintest:{[ticker;lrnargs;cv]
  islices:{[cv_;i] (i+til cv_) mod cv_}[cv] each til cv;
  r:(,/) traintesthlpr[lrnargs;slices] each islices;
  r};
+
+/
+ * Calculate returns on a random trading policy
+ * @param {string} ticker - stock ticker for which to lookup data
+\
+randtest:{[ticker]
+ data:get_data[ticker];
+ data[`side]:1b,(count[data]-1)?01b;
+ last[realized[data]]`return};
