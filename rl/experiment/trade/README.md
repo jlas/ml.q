@@ -72,7 +72,7 @@ deviation is significantly lower.
 ### alpha & gamma
 
 The data suggests higher returns are produced with higher values of alpha and
-beta. Experiments were conducted with the cross product of alpha and beta values
+gamma. Experiments were conducted with the cross product of alpha and gamma values
 in the range [0.1, 0.9]. Average returns are plotted below with the log of
 standard deviation added as a band.
 
