@@ -34,7 +34,8 @@ singleshot:{[ticker;episodes]
 
 / Train and test and write out the top N runs to disk
 getreturns:{[ticker;topcnt]
- r:{singleshot["IBM";100]} peach til 100;
+ r:{[t;x] singleshot[t;100]}[ticker] peach til 100;
+ last[r]`return;
  top:r[topcnt#idesc {last[x]`return} each r];
  r:([] date:first[top]`date;bhreturn:first[top]`bhreturn);
  r:{[r;x] r[`$("rtn",string[first 1#x])]:(1_x)`return;r} over enlist[r],til[count[top]],'top;
