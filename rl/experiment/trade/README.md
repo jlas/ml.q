@@ -7,7 +7,7 @@ assumptions:
  * There is only one opportunity to trade per day which must be done by paying
  the `close` price provided in historical market data.
  * An agent either has a long or short position in one security. The exact
- number of shares is made irrelevent by using cumulative returns.
+ number of shares is made irrelevant by using cumulative returns.
  * No transaction costs are taken into account.
 
 ## Training
