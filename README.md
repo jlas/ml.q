@@ -11,6 +11,10 @@ Machine Learning for kdb+/q
 
 ## Examples
 
+### Reinforcement Learning
+
+ * [Q-learning applied to trading](https://github.com/jlas/ml.q/tree/master/rl/experiment/trade#q-learning-applied-to-trading)
+
 ### k nearest neighbors
 
 Find the n closest points to a target
