@@ -34,10 +34,11 @@ get_data:{[ticker]
  t:`date xasc t;
  t:update
   momentum:{(x>=0)} -1+close%close[i-5],
-  volatility:{(x>=0)} 5 mavg -1+close%close[i-1],
+  vol:0^5 mdev log close%close[i-1],
   sma20:mavg[20;close],
   sma50:mavg[50;close],
   rtn5:-1+close[i+5]%close from t;
+ t:update volatility:(med[vol] <) each vol from t;
  t:update xsma:{(x>=0)-x<0} sma20-sma50 from t;
  t:update xsma:0^xsma-xsma[i-1] from t;
  t:update downxsma:.trading.swin[{any x<0};5;xsma],
