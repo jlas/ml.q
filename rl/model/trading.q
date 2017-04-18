@@ -80,31 +80,31 @@ policy:{[store;rprev;r]
  rprev,r};
 
 /
- * Calculate realized returns
- * @param {table} rprev - accumulated processed records
- * @param {dict} r - new record of trade data to process
- * @returns {table}
-\
-realized_:{[rprev;r]
- dir:$[1b=r[`side];1f;-1f];
- r[`cash]:last[rprev][`cash]-2*dir*r[`close];
- r[`return]:(r[`cash]+dir*r[`close])%first[rprev][`close];
- rprev,r};
-
-/
- * Calculate realized returns
+ * Calculate realized returns, assumptions:
+ *  - Start with exactly enough cash to purchase (at close) one share at time 0
+ *  - Only valid positions are long 1 share or short 1 share
+ *  - It follows that each transaction (except first) must be 2 shares
+ *  - We are concerned with total return so exact qty doesnt matter
  * @param {table} data
  * @returns {table}
 \
 realized:{[data]
  / first record treated as a buy
  if[not first[data]`side;'"initial side should be 1b"];
- first_:enlist[enlist[first[data],`cash`return!0 1f]];
+
  / ensure state change to get realized rtns up to last observation
  if[1=count distinct (-2#data)`side;
   data:update side:not side from data where i=-1+count[data]];
- r:select from data where side<>side[i-1];
- realized_ over first_,1_r};
+
+ data:select from data where side<>prev side;
+ data:update qty:2, dir:-1+2*side from data;
+ data:update qty:1 from data where i=0;
+
+ data:update qtydelta:dir*qty, cashdelta:dir*qty*close from data;
+ data:update netcash:1_(-\) (close[0],cashdelta), netqty:(+\) qtydelta from data;
+
+ / return computed relative to value at time 0 i.e. close price of share
+ update return:(netcash+close*netqty) % first close from data};
 
 testhlpr_:{[store;data]
  first_:enlist[enlist[first[data],enlist[`side]!enlist[1b]]];
