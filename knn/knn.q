@@ -27,8 +27,9 @@ knn:{[t;p;k]
  *     - Where value of column >= median
  *   4) Repeat from 1) on the partitioned tables until target depth reached
  *
- * @param {table} t
- * @param {int} depth
+ * @param {table} t - input data
+ * @param {list} cols_ - subset of cols from t to partition on
+ * @param {int} depth - depth limit for kdtree
  * @returns {dict} - The return value is a dictionary with keys `meds`leaves.
  *   The `meds value contains a list with medians and columns encountered at
  *   each internal node of the tree. This is a binary heap encoded list, i.e.
@@ -110,7 +111,7 @@ kdknn_:{[kdt;p;k;i]
  *
  * test:
  *   q)t:(`a`b`c!) each {3?100} each til 1000000
- *   q)kdt:kdtree[t;5]
+ *   q)kdt:kdtree[t;cols t;5]
  *   q)kdknn[kdt;`a`b`c!1 1 1;3]
 \
 kdknn:{[kdt;p;k] kdknn_[kdt;p;k;1]};
