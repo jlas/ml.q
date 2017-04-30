@@ -6,9 +6,9 @@
 \
 test:{
  t:(`a`b`c!) each {3?10000.} each til 10000;
- fn1:.knn.kdknn[.knn.kdtree[t;5]];
+ fn1:.knn.kdknn[.knn.kdtree[t;cols t;5]];
  fn2:.knn.knn[t];
- points:{3?100} each til 100;
+ points:(`a`b`c!) each {3?100} each til 100;
  / use a xasc sort since order of points with same dist is not deterministic
  cmp:{[fn1;fn2;p] (`dist`a`b`c xasc fn1[p;3])~(`dist`a`b`c xasc fn2[p;3])};
  all cmp[fn1;fn2] each points};
@@ -30,7 +30,7 @@ test_simple:{
  leaves:(enlist[`a`b!0 0];enlist[`a`b!0 1];enlist[`a`b!1 0];enlist[`a`b!1 1]);
  kdt:`meds`leaves!(meds;leaves);
  result:([] a:0 0 1 1;b:0 1 0 1;dist:`float$(0;1;1;sqrt[2]));
- fn:.knn.kdknn[kdt;0 0];
+ fn:.knn.kdknn[kdt;`a`b!0 0];
  / use a xasc sort since order of points with same dist is not deterministic
  cmp:{[fn;result;k] (`dist`a`b xasc fn[k])~k#result};
  all cmp[fn;result] each 1 3 4};

@@ -2,14 +2,17 @@
 
 /
  * k nearest neighbors
+ * @param {table} t - input data
+ * @param {dict} p - find neighbors close to this point
+ * @param {int} k - number of neighbors to find
  *
  * test:
  *   q)t:(`a`b`c!) each {3?100} each til 1000000
- *   q)\ts knn[t;1 1 1;5]
+ *   q)\ts knn[t;`a`b`c!1 1 1;5]
  *   2155 136389072
 \
 knn:{[t;p;k]
- dist:sqrt (+/) each xexp[;2] each (p -) each (value each t);
+ dist:sqrt (+/) each xexp[;2] each (p -) each flip t[key p];
  min[(count t;k)] # `dist xasc update dist:dist from t}
 
 
@@ -35,8 +38,7 @@ knn:{[t;p;k]
  *   tree so the first entry corresponds to the left-most leaf and the last
  *   entry corresponds to the right-most leaf.
 \
-kdtree:{[t;depth]
- cols_:cols t;
+kdtree:{[t;cols_;depth]
  queue:enlist[t];
  / meds is binary heap encoded list, first element is dummy
  meds:enlist[::];
@@ -61,10 +63,10 @@ kdtree:{[t;depth]
 
 /
  * Recursive helper for kdtree k nearest neighbor
- * @param {dict} kdtree
- * @param {dict} target point
+ * @param {dict} kdt - kdtree
+ * @param {dict} p - target point
  * @param {int} k
- * @param {int} index of binary heap encoded tree node
+ * @param {int} i - index of binary heap encoded tree node
  * @returns {table}
 \
 kdknn_:{[kdt;p;k;i]
@@ -101,17 +103,14 @@ kdknn_:{[kdt;p;k;i]
 
 /
  * kdtree k nearest neighbors
- * @param {dict} kdtree generated with kdtree function
- * @param {dict or list} point
+ * @param {dict} kdt - kdtree generated with kdtree function
+ * @param {dict} p - point
  * @param {int} k
  * @returns {table}
  *
  * test:
  *   q)t:(`a`b`c!) each {3?100} each til 1000000
  *   q)kdt:kdtree[t;5]
- *   q)kdknn[kdt;1 1 1;3]
+ *   q)kdknn[kdt;`a`b`c!1 1 1;3]
 \
-kdknn:{[kdt;p;k]
- / Make point a dict
- if[99h<>type p;p:cols[kdt[`leaves][0]]!p];
- kdknn_[kdt;p;k;1]};
+kdknn:{[kdt;p;k] kdknn_[kdt;p;k;1]};

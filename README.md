@@ -20,7 +20,7 @@ Machine Learning for kdb+/q
 Find the n closest points to a target
 
     q)t:(`a`b`c!) each {3?100} each til 1000000
-    q)knn[t;1 2 3;3]
+    q)knn[t;`a`b`c!1 2 3;3]
     a b c dist
     ----------
     1 2 3 0
