@@ -22,9 +22,10 @@ dbscan:{[t;minpts;epsilon]
  / Build dict with index as key
  d:(first each r)!((1_) each r);
 
- / Run disjoint set algo to combine core points
- djargs:(,/) {[d;x] x,'d[x]}[d;] each key d;
- d:dj over enlist[d],djargs;
+ / Run disjoint set algo to combine core points. Improve effeciency by running
+ / dj in the inner function, so changes to the dict structure will be seen on
+ / the subsequent invocation leading to fewer overall calls of dj.
+ d:{[d;x] dj over enlist[d],(x,'d[x])} over enlist[d],key d;
 
  / Make root keys point to themselves
  root_keys:key[d] where 1 < count each d each key d;
