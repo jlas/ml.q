@@ -66,7 +66,7 @@ observe:{[store;reward;newstate]
  qhat:store[`qhat];
  curq:qhat[curstate][curaction];
  newq:reward + store[`gamma]*first[desc qhat[newstate_]];
- newq:newq*store[`alpha] + curq*(1-store[`alpha]);
+ newq:(newq*store[`alpha]) + curq*(1-store[`alpha]);
  newq_:qhat[curstate],enlist[curaction]!enlist[newq];
  store[`qhat]:(curstate # store[`qhat]), enlist[newq_], (1+curstate) _ store[`qhat];
  store[`curstate]:store[`curstate],newstate;
