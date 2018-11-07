@@ -15,6 +15,14 @@ Machine Learning for kdb+/q
 
  * [Q-learning applied to trading](https://github.com/jlas/ml.q/tree/master/rl/experiment/trade#q-learning-applied-to-trading)
 
+### DBSCAN
+
+Find clusters of points based on density
+
+    q)t:{3?1.} each til 100
+    q)dbscan[t;3;.2]
+    -1 0 0 1 0 -1 0 -1 1 1 2 0 3 0 -1 1 4 1 1 1 2 1 0 -1 2 1 2 1 1 4 1 4 1 1 1 0 ..
+
 ### k nearest neighbors
 
 Find the n closest points to a target
