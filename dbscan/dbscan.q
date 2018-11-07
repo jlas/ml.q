@@ -32,11 +32,13 @@ dbscan:{[t;minpts;epsilon]
  d:d,root_keys!enlist each root_keys;
 
  / Make noise cluster and assign as default
- d:((1 + til count t)!enlist each count[t]#-1),d;
+ noise:where 0 = count each d;
+ d,:noise!count[noise]#-1;
 
  / Get cluster assignments
  d:first each d each (1 + til count t);
 
  / Normalize cluster numbers to 0, 1, 2 ...
- k:asc distinct d;
- (k!-1 + til count k) each d}
+ k:distinct d except -1;
+ normd:(enlist[-1]!enlist[-1]),(k!til[count k]);
+ normd each d}
